@@ -1,7 +1,7 @@
 import os
 import numpy as np
 import cv2
-
+import utils
 
 def procesar_imagen(imagen, detector, lector):
     detecciones = detector.predecir(imagen)
@@ -14,10 +14,13 @@ def procesar_imagen(imagen, detector, lector):
         if recorte.size == 0:
             continue
 
-        texto, confianza_ocr= lector.leer(recorte)
+        recorte_procesado = utils.pre_procesar(recorte)
+        cv2.imshow("Recorte OCR", recorte_procesado)
+
+        texto, confianza_ocr = lector.leer(recorte_procesado)
 
         if isinstance(texto, list):
-            texto = texto[0]
+            texto = texto[0].replace("_", "")
 
         if confianza_ocr is None:
             confianza_ocr = 0.0
@@ -25,7 +28,7 @@ def procesar_imagen(imagen, detector, lector):
             confianza_array = np.array(confianza_ocr, dtype=float)
             confianza_ocr = float(np.mean(confianza_array)) if confianza_array.size > 0 else 0.0
 
-        etiqueta = f"{texto} | {confianza_caja:.2f} | {confianza_ocr:.2f}"
+        etiqueta = f"Matricula: {texto} |Conf. YOLO: {confianza_caja:.2f} |Conf. OCR: {confianza_ocr:.2f}"
 
         cv2.rectangle(imagen, (x1, y1), (x2, y2), (0, 255, 0), 2)
         cv2.putText(imagen, etiqueta, (x1, y1 - 10),
