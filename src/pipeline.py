@@ -32,6 +32,7 @@ def procesar_imagen(imagen, detector, lector):
                     cv2.FONT_HERSHEY_SIMPLEX, 0.6,
                     (0, 255, 0), 2)
 
+        print (f"Detecciones: {etiqueta}")
     return imagen
 
 
