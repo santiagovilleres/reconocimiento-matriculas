@@ -1,41 +1,31 @@
-from detect import Detector
-from ocr import FastPlateOCR
-from pipeline import run_webcam, run_image, run_folder
+from detect import DetectorMatrículas
+from ocr import LectorMatrícula
+from pipeline import ejecutar_webcam, ejecutar_imagen, ejecutar_carpeta
 
 import tkinter as tk
 from tkinter import filedialog
 
 
-def seleccionar_imagen():
-    root = tk.Tk()
-    root.withdraw()
-    root.attributes("-topmost", True)
+def seleccionar_ruta(es_carpeta=False):
+    ventana = tk.Tk()
+    ventana.withdraw()
+    ventana.attributes("-topmost", True)
 
-    file_path = filedialog.askopenfilename(
-        title="Seleccionar imagen",
-        filetypes=[("Imagenes", "*.jpg *.jpeg *.png")]
-    )
+    if es_carpeta:
+        ruta = filedialog.askdirectory(title="Seleccionar carpeta")
+    else:
+        ruta = filedialog.askopenfilename(
+            title="Seleccionar imagen",
+            filetypes=[("Imagenes", "*.jpg *.jpeg *.png")]
+        )
 
-    root.destroy()
-    return file_path
-
-
-def seleccionar_carpeta():
-    root = tk.Tk()
-    root.withdraw()
-    root.attributes("-topmost", True)
-
-    folder_path = filedialog.askdirectory(
-        title="Seleccionar carpeta"
-    )
-
-    root.destroy()
-    return folder_path
+    ventana.destroy()
+    return ruta
 
 
 def main():
-    detector = Detector("models/weights/best.pt")
-    ocr = FastPlateOCR()
+    detector = DetectorMatrículas("models/weights/best.pt")
+    lector = LectorMatrícula()
 
     while True:
         print("\n===== ALPR - Reconocimiento de Patentes =====")
@@ -47,17 +37,17 @@ def main():
         opcion = input("Seleccione una opción: ")
 
         if opcion == "1":
-            run_webcam(detector, ocr)
+            ejecutar_webcam(detector, lector)
 
         elif opcion == "2":
-            ruta = seleccionar_imagen()
+            ruta = seleccionar_ruta(es_carpeta=False)
             if ruta:
-                run_image(ruta, detector, ocr)
+                ejecutar_imagen(ruta, detector, lector)
 
         elif opcion == "3":
-            ruta = seleccionar_carpeta()
+            ruta = seleccionar_ruta(es_carpeta=True)
             if ruta:
-                run_folder(ruta, detector, ocr)
+                ejecutar_carpeta(ruta, detector, lector)
 
         elif opcion == "0":
             break

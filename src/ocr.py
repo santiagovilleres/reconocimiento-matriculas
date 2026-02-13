@@ -1,10 +1,10 @@
 from fast_plate_ocr import LicensePlateRecognizer
 
 
-class FastPlateOCR:
-    def __init__(self, model_name="cct-xs-v1-global-model"):
-        self.model = LicensePlateRecognizer(model_name)
+class LectorMatrícula:
+    def __init__(self, nombre_modelo="cct-xs-v1-global-model"):
+        self.modelo = LicensePlateRecognizer(nombre_modelo)
 
-    def read(self, image):
-        text, conf = self.model.run(image, return_confidence=True)
-        return text, conf
+    def leer(self, imagen):
+        texto, confianza = self.modelo.run(imagen, return_confidence=True)
+        return texto, confianza

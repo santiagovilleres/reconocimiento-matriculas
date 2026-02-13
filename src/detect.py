@@ -1,21 +1,21 @@
 from ultralytics import YOLO
 
-class Detector:
-    def __init__(self, weights):
-        self.model = YOLO(weights)
+class DetectorMatrículas:
+    def __init__(self, pesos):
+        self.modelo = YOLO(pesos)
 
-    def predict(self, image, conf=0.25):
-        results = self.model(image)
-        detections = []
+    def predecir(self, imagen, confianza_minima=0.25):
+        resultados = self.modelo(imagen)
+        detecciones = []
 
-        for box in results[0].boxes:
-            x1, y1, x2, y2 = map(int, box.xyxy[0])
-            confidence = float(box.conf[0])
+        for caja in resultados[0].boxes:
+            x1, y1, x2, y2 = map(int, caja.xyxy[0])
+            confianza = float(caja.conf[0])
 
-            if confidence >= conf:
-                detections.append({
+            if confianza >= confianza_minima:
+                detecciones.append({
                     "xyxy": (x1, y1, x2, y2),
-                    "conf": confidence
+                    "confianza": confianza
                 })
 
-        return detections
+        return detecciones

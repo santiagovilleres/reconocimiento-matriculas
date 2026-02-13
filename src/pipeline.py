@@ -1,92 +1,99 @@
 import os
+import numpy as np
 import cv2
 
 
-def process_image(image, detector, ocr):
-    detections = detector.predict(image)
+def procesar_imagen(imagen, detector, lector):
+    detecciones = detector.predecir(imagen)
 
-    for det in detections:
-        x1, y1, x2, y2 = det["xyxy"]
-        bb_conf = det["conf"]
+    for detección in detecciones:
+        x1, y1, x2, y2 = detección["xyxy"]
+        confianza_caja = detección["confianza"]
 
-        crop = image[y1:y2, x1:x2]
-        if crop.size == 0:
+        recorte = imagen[y1:y2, x1:x2]
+        if recorte.size == 0:
             continue
 
-        text, ocr_conf = ocr.read(crop)
+        texto, confianza_ocr= lector.leer(recorte)
 
-        if isinstance(text, list):
-            text = text[0]
+        if isinstance(texto, list):
+            texto = texto[0]
 
-        label = f"{text} | {bb_conf:.2f}"
+        if confianza_ocr is None:
+            confianza_ocr = 0.0
+        else:
+            confianza_array = np.array(confianza_ocr, dtype=float)
+            confianza_ocr = float(np.mean(confianza_array)) if confianza_array.size > 0 else 0.0
 
-        cv2.rectangle(image, (x1, y1), (x2, y2), (0, 255, 0), 2)
-        cv2.putText(image, label, (x1, y1 - 10),
+        etiqueta = f"{texto} | {confianza_caja:.2f} | {confianza_ocr:.2f}"
+
+        cv2.rectangle(imagen, (x1, y1), (x2, y2), (0, 255, 0), 2)
+        cv2.putText(imagen, etiqueta, (x1, y1 - 10),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.6,
                     (0, 255, 0), 2)
 
-    return image
+    return imagen
 
 
-def run_webcam(detector, ocr):
-    cap = cv2.VideoCapture(0)
+def ejecutar_webcam(detector, lector):
+    captura = cv2.VideoCapture(0)
 
     while True:
-        ret, frame = cap.read()
-        if not ret:
+        exito, fotograma = captura.read()
+        if not exito:
             break
 
-        frame = process_image(frame, detector, ocr)
-        cv2.imshow("Webcam", frame)
+        fotograma = procesar_imagen(fotograma, detector, lector)
+        cv2.imshow("Webcam", fotograma)
 
         if cv2.waitKey(1) & 0xFF == ord("q"):
             break
 
-    cap.release()
-    cv2.destroyAllWindows()
+    captura.release()
+    cv2.destroyWindow("Webcam")
 
 
-def run_image(image_path, detector, ocr):
-    image = cv2.imread(image_path)
-    image = process_image(image, detector, ocr)
+def ejecutar_imagen(ruta_imagen, detector, lector):
+    imagen = cv2.imread(ruta_imagen)
+    imagen = procesar_imagen(imagen, detector, lector)
 
-    cv2.imshow("Image", image)
+    cv2.imshow("Imagen", imagen)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
 
-def run_folder(folder_path, detector, ocr):
-    files = [f for f in os.listdir(folder_path)
+def ejecutar_carpeta(ruta_carpeta, detector, lector):
+    archivos = [f for f in os.listdir(ruta_carpeta)
                 if f.lower().endswith((".jpg", ".jpeg", ".png"))]
 
-    if not files:
+    if not archivos:
         print("No hay imágenes en la carpeta.")
         return
 
-    index = 0
+    indice = 0
 
     while True:
-        path = os.path.join(folder_path, files[index])
-        image = cv2.imread(path)
+        ruta = os.path.join(ruta_carpeta, archivos[indice])
+        imagen = cv2.imread(ruta)
 
-        if image is None:
-            index += 1
+        if imagen is None:
+            indice += 1
             continue
 
-        processed = process_image(image, detector, ocr)
+        procesada = procesar_imagen(imagen, detector, lector)
 
-        cv2.imshow("Modo carpeta", processed)
-        print(f"Imagen {index+1}/{len(files)}")
+        cv2.imshow("Modo carpeta", procesada)
+        print(f"Imagen {indice+1}/{len(archivos)}")
         print("n = siguiente | b = anterior | q = salir")
 
-        key = cv2.waitKey(0) & 0xFF
+        tecla = cv2.waitKey(0) & 0xFF
 
-        if key == ord("q"):
+        if tecla == ord("q"):
             break
-        elif key == ord("n"):
-            index = (index + 1) % len(files)
-        elif key == ord("b"):
-            index = (index - 1) % len(files)
+        elif tecla == ord("n"):
+            indice = (indice + 1) % len(archivos)
+        elif tecla == ord("b"):
+            indice = (indice - 1) % len(archivos)
 
-    cv2.destroyAllWindows()
+    cv2.destroyWindow("Modo carpeta")
 

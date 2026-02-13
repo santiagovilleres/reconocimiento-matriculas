@@ -1,13 +1,13 @@
 from ultralytics import YOLO
 
-def train_model():
+def entrenar_modelo():
 
-    model = YOLO("yolov8s.pt")
+    modelo = YOLO("yolov8s.pt")
 
-    data_yaml = "data/data.yaml"
+    archivo_datos = "data/data.yaml"
 
-    results = model.train(
-        data=str(data_yaml),
+    resultados = modelo.train(
+        data=str(archivo_datos),
         epochs=20,
         patience=10,
         imgsz=640,
@@ -15,7 +15,7 @@ def train_model():
         name="detector"
     )
 
-    return results
+    return resultados
 
 if __name__ == "__main__":
-    train_model()
+    entrenar_modelo()
