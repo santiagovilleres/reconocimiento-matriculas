@@ -5,7 +5,7 @@ class DetectorMatrículas:
         self.modelo = YOLO(pesos)
 
     def predecir(self, imagen, confianza_minima=0.25):
-        resultados = self.modelo(imagen)
+        resultados = self.modelo(imagen, verbose=False)
         detecciones = []
 
         for caja in resultados[0].boxes:
