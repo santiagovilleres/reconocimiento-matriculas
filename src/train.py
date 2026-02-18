@@ -1,19 +1,17 @@
 from ultralytics import YOLO
 
+MODELO = "yolov8s.pt"
+RUTA_DATOS = "data/data.yaml"
+EPOCHS = 20
+TAMANIO_IMAGEN = 640
+PROYECTO = "runs"
+NOMBRE_MODELO = "detector"
+
 def entrenar_modelo():
 
-    modelo = YOLO("yolov8s.pt")
+    modelo = YOLO(MODELO)
 
-    archivo_datos = "data/data.yaml"
-
-    resultados = modelo.train(
-        data=str(archivo_datos),
-        epochs=20,
-        patience=10,
-        imgsz=640,
-        project="runs",
-        name="detector"
-    )
+    resultados = modelo.train(data=str(RUTA_DATOS), epochs=EPOCHS, imgsz=TAMANIO_IMAGEN, project=PROYECTO,name=NOMBRE_MODELO)
 
     return resultados
 

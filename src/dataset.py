@@ -1,31 +1,26 @@
 import os
 
-DATASET_DIR = "data"
-SPLITS = ["train", "val", "test"]
-VALID_EXT = (".jpg", ".jpeg", ".png")
-COUNTER_DIGITS = 3
+CARPETA_IMAGENES = "data/images"
+CARPETA_LABELS = "data/labels"
 
-for split in SPLITS:
-    images_dir = os.path.join(DATASET_DIR, split, "images")
-    labels_dir = os.path.join(DATASET_DIR, split, "labels")
+def renombrar():
+    imagenes = sorted([f for f in os.listdir(CARPETA_IMAGENES) if f.endswith(".jpg")])
+    contador = 1
 
-    if not os.path.exists(images_dir):
-        continue
+    for img in imagenes:
+        nombre_base = os.path.splitext(img)[0]
+        label = nombre_base + ".txt"
 
-    images = sorted(f for f in os.listdir(images_dir)
-                    if f.lower().endswith(VALID_EXT))
+        ruta_imagen = os.path.join(CARPETA_IMAGENES, img)
+        ruta_label = os.path.join(CARPETA_LABELS, label)
 
-    for i, img_name in enumerate(images, start=1):
-        ext = os.path.splitext(img_name)[1]
-        new_name = f"{i:0{COUNTER_DIGITS}d}"
+        if os.path.exists(ruta_label):
+            nuevo_nombre = f"{contador:03d}"
 
-        old_img_path = os.path.join(images_dir, img_name)
-        new_img_path = os.path.join(images_dir, new_name + ext)
-        os.rename(old_img_path, new_img_path)
+            os.rename(ruta_imagen, os.path.join(CARPETA_IMAGENES, nuevo_nombre + ".jpg"))
+            os.rename(ruta_label, os.path.join(CARPETA_LABELS, nuevo_nombre + ".txt"))
 
-        old_label_path = os.path.join(labels_dir,
-                                      os.path.splitext(img_name)[0] + ".txt")
-        new_label_path = os.path.join(labels_dir, new_name + ".txt")
+            contador += 1
 
-        if os.path.exists(old_label_path):
-            os.rename(old_label_path, new_label_path)
+if __name__ == "__main__":
+    renombrar()
