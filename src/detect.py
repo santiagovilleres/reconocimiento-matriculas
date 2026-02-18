@@ -20,7 +20,10 @@ class Detector:
             for archivo in os.listdir(ruta):
                 if archivo.lower().endswith(EXTENSIONES_IMAGEN):
                     ruta_completa = os.path.join(ruta, archivo)
-                    self._procesar_archivo(ruta_completa)
+                    salir = self._procesar_archivo(ruta_completa)
+                    if salir:
+                        print("Procesamiento interrumpido por el usuario")
+                        break
         else:
             self._procesar_archivo(ruta)
 
@@ -63,9 +66,15 @@ class Detector:
         else:
             print("No se detectaron matrículas en la imagen")
 
-        cv2.imshow("Imagen", imagen)
-        cv2.waitKey(0)
+        cv2.imshow("Imagen", self._redimensionar(imagen, ancho=960))
+
+        tecla = cv2.waitKey(0) & 0xFF
         cv2.destroyAllWindows()
+
+        if tecla == 27:  # ESC
+            return True
+
+        return False
 
 
     def _cargar_imagen(self, ruta):
@@ -121,3 +130,10 @@ class Detector:
         cv2.rectangle(imagen, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
         cv2.putText(imagen,texto, (x1 + 5, y1 - 5),fuente, escala, (0, 0, 0),grosor)
+
+
+    def _redimensionar(self, imagen, ancho=960):
+        h, w = imagen.shape[:2]
+        escala = ancho / w
+        nuevo_alto = int(h * escala)
+        return cv2.resize(imagen, (ancho, nuevo_alto))

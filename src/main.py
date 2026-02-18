@@ -28,7 +28,8 @@ def main():
             break
 
         root = tkinter.Tk()
-
+        root.attributes('-topmost', True)
+        
         root.withdraw()
 
         if opcion == IMAGEN:
@@ -39,7 +40,7 @@ def main():
 
         elif opcion == WEBCAM:
             detector.procesar_webcam()
-            return
+            continue
         
         else:
             print("Opción inválida")

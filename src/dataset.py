@@ -1,9 +1,18 @@
 import os
+import cv2
+from ultralytics import YOLO
 
 CARPETA_IMAGENES = "data/images"
 CARPETA_LABELS = "data/labels"
 
+RUTA_MODELO = "models/weights/best.pt"
+INPUT = "data/dataset/images"
+OUTPUT = "ocr_dataset_raw/images"
+UMBRAL_CONFIANZA = 0.4
+
+
 def renombrar():
+
     imagenes = sorted([f for f in os.listdir(CARPETA_IMAGENES) if f.endswith(".jpg")])
     contador = 1
 
@@ -22,5 +31,43 @@ def renombrar():
 
             contador += 1
 
+
+def recortar():
+
+    os.makedirs(OUTPUT, exist_ok=True)
+
+    modelo = YOLO(RUTA_MODELO)
+
+    id = 1
+
+    for nombre_imagen in sorted(os.listdir(INPUT)):
+        if not nombre_imagen.lower().endswith((".jpg", ".png", ".jpeg")):
+            continue
+
+        ruta_imagen = os.path.join(INPUT, nombre_imagen)
+        imagen = cv2.imread(ruta_imagen)
+
+        if imagen is None:
+            continue
+
+        resultados = modelo(imagen, conf=UMBRAL_CONFIANZA)
+
+        for resultado in resultados:
+            for box in resultado.boxes:
+                x1, y1, x2, y2 = map(int, box.xyxy[0])
+
+                imagen_matricula = imagen[y1:y2, x1:x2]
+
+                if imagen_matricula.size == 0:
+                    continue
+
+                nuevo_nombre = f"{id:06d}.jpg"
+                cv2.imwrite(os.path.join(OUTPUT, nuevo_nombre), imagen_matricula)
+
+                print(f"Guardado: {nuevo_nombre}")
+
+                id += 1
+
 if __name__ == "__main__":
     renombrar()
+    recortar()
