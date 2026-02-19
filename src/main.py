@@ -1,6 +1,7 @@
 from detect import Detector
 import tkinter
 from tkinter import filedialog
+from evaluate import Evaluador
 
 RUTA_MODELO = "models/weights/best.pt"
 NOMBRE_MODELO_OCR = "cct-xs-v1-global-model"
@@ -8,7 +9,8 @@ NOMBRE_MODELO_OCR = "cct-xs-v1-global-model"
 IMAGEN = "1"
 CARPETA = "2"
 WEBCAM = "3"
-SALIR = "4"
+EVALUAR = "4"
+SALIR = "5"
 
 def main():
 
@@ -20,7 +22,8 @@ def main():
         print("1 : Procesar imagen")
         print("2 : Procesar carpeta")
         print("3 : Webcam")
-        print("4 : Salir")
+        print("4 : Evaluar modelo")
+        print("5 : Salir")
 
         opcion = input("Opción: ")
         
@@ -42,9 +45,17 @@ def main():
             detector.procesar_webcam()
             continue
         
+        elif opcion == EVALUAR:
+            evaluador = Evaluador()
+            evaluador.evaluar()
+            continue
+
+        elif opcion == SALIR:
+            break
+
         else:
             print("Opción inválida")
-            return
+            continue
 
         if ruta:
             detector.procesar_imagen(ruta)

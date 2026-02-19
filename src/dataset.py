@@ -6,8 +6,8 @@ CARPETA_IMAGENES = "data/images"
 CARPETA_LABELS = "data/labels"
 
 RUTA_MODELO = "models/weights/best.pt"
-INPUT = "data/dataset/images"
-OUTPUT = "ocr_dataset_raw/images"
+INPUT = "data/images"
+OUTPUT = "ocr/images"
 UMBRAL_CONFIANZA = 0.4
 
 
