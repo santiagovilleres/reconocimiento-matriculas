@@ -16,6 +16,9 @@ El sistema implementa un pipeline completo que abarca:
 * Reconocimiento de caracteres utilizando Fast Plate OCR.
 * Postprocesado de texto.
 * Evaluación cuantitativa mediante métricas de detección y reconocimiento.
+* Interfaz de menú interactiva para facilitar el uso del sistema.
+* Procesamiento en tiempo real desde webcam.
+* Visualización de resultados con anotaciones sobre las imágenes.
 
 Se garantiza reproducibilidad mediante scripts organizados y entorno controlado.
 
@@ -59,6 +62,10 @@ Texto final
 * OpenCV
 * NumPy
 * Pandas
+* Tkinter (interfaz gráfica)
+* Python-Levenshtein (métricas de evaluación)
+* PyTorch (soporte GPU)
+* psutil (monitoreo de recursos)
 
 
 ## 5. Estructura del Proyecto
@@ -66,13 +73,20 @@ Texto final
 ```
 project/
 ├── data/
-│    ├──  train/
+│    ├── train/
 │    ├── val/
-│    └── test/
+│    ├── test/
+│    │   ├── images/
+│    │   └── labels/
+│    ├── ocr/
+│    │   ├── images/
+│    │   └── labels.txt
+│    └── data.yaml
 ├── models/
 │   └── weights/
 │       └── best.pt
 ├── src/
+│   ├── main.py
 │   ├── train.py
 │   ├── detect.py
 │   ├── ocr.py
@@ -113,13 +127,33 @@ python -m pip install -r requirements.txt
 
 ## 7. Ejecución
 
-### Inferencia sobre imagen
+### Interfaz principal (recomendado)
+
+El sistema incluye una interfaz de menú interactiva que permite acceder a todas las funcionalidades:
 
 ```bash
-python src/detect.py --image ruta_imagen.jpg
+python src/main.py
 ```
 
-### Evaluación sobre dataset de test
+El menú ofrece las siguientes opciones:
+
+1. **Procesar imagen**: Selecciona una imagen individual para detectar y reconocer matrículas.
+2. **Procesar carpeta**: Procesa todas las imágenes en una carpeta seleccionada.
+3. **Webcam**: Procesa en tiempo real desde la cámara web (presiona ESC para salir).
+4. **Evaluar modelo**: Ejecuta la evaluación completa del modelo con todas las métricas.
+5. **Salir**: Cierra la aplicación.
+
+### Ejecución directa de módulos
+
+También es posible ejecutar los módulos directamente:
+
+#### Detección sobre imagen o carpeta
+
+```bash
+python src/detect.py
+```
+
+#### Evaluación sobre dataset de test
 
 ```bash
 python src/evaluate.py
@@ -142,8 +176,10 @@ python src/evaluate.py
 
 ### Rendimiento
 
-* Latencia promedio por imagen
-* Comparación CPU/GPU (si aplica)
+* Latencia promedio por imagen (lote)
+* Latencia promedio por frame (webcam)
+* Uso de memoria RAM
+* Uso de memoria GPU (si está disponible)
 
 ## 9. Autores
 

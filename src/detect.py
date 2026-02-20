@@ -71,7 +71,7 @@ class Detector:
         tecla = cv2.waitKey(0) & 0xFF
         cv2.destroyAllWindows()
 
-        if tecla == 27:  # ESC
+        if tecla == 27:
             return True
 
         return False
