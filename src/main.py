@@ -1,3 +1,8 @@
+'''
+Este archivo actúa como entrada a la aplicación, gestiona la interacción usuario-sistema, 
+permitiendo al operador seleccionar e inicializar los módulos necesarios.
+'''
+
 from detect import Detector
 import tkinter
 from tkinter import filedialog
@@ -13,7 +18,10 @@ EVALUAR = "4"
 SALIR = "5"
 
 def main():
-
+    '''
+    Esta función es el punto de entrada a la aplicación, gestiona la interacción usuario-sistema, 
+    permitiendo al usuario seleccionar los módulos necesarios.
+    '''
     detector = Detector(ruta_modelo=RUTA_MODELO, nombre_modelo_ocr=NOMBRE_MODELO_OCR)
 
     while True:

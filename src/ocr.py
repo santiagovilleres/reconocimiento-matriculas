@@ -18,7 +18,7 @@ class OCR:
 
     def reconocer(self, imagen_matricula):
         '''
-        Esta funcion recibe la imagen recortada de la matrícula, la preprocesa, la pasa por el modelo OCR y luego postprocesa el texto resultante para devolverlo limpio. Estas acciones se derivan a funciones privadas.
+        Este método recibe la imagen recortada de la matrícula, la preprocesa, la pasa por el modelo OCR y luego postprocesa el texto resultante para devolverlo limpio. Estas acciones se derivan a funciones privadas.
         '''
         imagen_matricula_preprocesada = self._preprocesar(imagen_matricula)
         texto = self.ocr.run(imagen_matricula_preprocesada)
@@ -27,7 +27,7 @@ class OCR:
 
     def _preprocesar(self, imagen):
         '''
-        Esta función se encarga de redimensionar la imagen de la matrícula al tamaño esperado por el modelo OCR (128x64, según la documentación del modelo).
+        Este método se encarga de redimensionar la imagen de la matrícula al tamaño esperado por el modelo OCR (128x64, según la documentación del modelo).
         '''
         imagen_preprocesada= cv2.resize(imagen, (ANCHO_OCR, ALTO_OCR))
         return imagen_preprocesada
@@ -35,7 +35,7 @@ class OCR:
     
     def _postprocesar(self, texto):
         '''
-        Esta función se encarga de limpiar el texto reconocido por el modelo OCR. En este caso, al ser un modelo global, el modelo completa los espacios vacios con guiones bajos. Por lo tanto, se reemplazan los guiones bajos por espacios vacíos para obtener el texto final de la matrícula.
+        Este método se encarga de limpiar el texto reconocido por el modelo OCR. En este caso, al ser un modelo global, el modelo completa los espacios vacios con guiones bajos. Por lo tanto, se reemplazan los guiones bajos por espacios vacíos para obtener el texto final de la matrícula.
         '''
         texto_postprocesado = texto[0].replace("_", "")
         return texto_postprocesado

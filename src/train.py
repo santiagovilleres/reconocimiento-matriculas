@@ -6,6 +6,7 @@ Este archivo define constantes para asegurar consistencia y coherencia.
 
 Se utiliza una función que encapsula la lógica.
 '''
+
 from ultralytics import YOLO
 
 MODELO = "yolov8s.pt"

@@ -1,3 +1,10 @@
+'''
+Este módulo implementa el núcleo de inferencia del sistema. 
+Su función es recibir imágenes (individuales, por lote o desde webcam), 
+ejecutar el modelo de detección y obtener las regiones de interés correspondientes a las matrículas. 
+Además, gestiona la visualización de los resultados y la integración con el módulo OCR.
+'''
+
 from ultralytics import YOLO
 import cv2
 from ocr import OCR
@@ -7,7 +14,9 @@ UMBRAL_CONFIANZA = 0.65
 EXTENSIONES_IMAGEN = (".jpg", ".jpeg", ".png")
 
 class Detector:
-
+    '''
+    Esta clase encapsula la funcionalidad de detección de matrículas, incluyendo la carga del modelo, el procesamiento de imágenes y la integración con OCR.
+    '''
     def __init__(self, ruta_modelo, nombre_modelo_ocr, umbral_confianza=UMBRAL_CONFIANZA):
         self.modelo = YOLO(ruta_modelo)
         self.ocr = OCR(nombre_modelo_ocr)
@@ -15,21 +24,26 @@ class Detector:
 
 
     def procesar_imagen(self, ruta):
-
+        '''
+        Este método procesa una imagen o un directorio de imágenes, ejecutando el modelo de detección y mostrando los resultados.
+        Parte de esta lógica se ha extraído a métodos privados para mejorar la legibilidad y modularidad del código.
+        '''
         if os.path.isdir(ruta):
             for archivo in os.listdir(ruta):
                 if archivo.lower().endswith(EXTENSIONES_IMAGEN):
                     ruta_completa = os.path.join(ruta, archivo)
                     salir = self._procesar_archivo(ruta_completa)
                     if salir:
-                        print("Procesamiento interrumpido por el usuario")
                         break
         else:
             self._procesar_archivo(ruta)
 
 
     def procesar_webcam(self):
-
+        '''
+        Este método accede a la webcam, procesa el video en tiempo real y muestra los resultados de detección.
+        La ejecución se detiene al presionar la tecla ESC.
+        '''
         captura = cv2.VideoCapture(0)
 
         if not captura.isOpened():
@@ -56,7 +70,10 @@ class Detector:
 
 
     def _procesar_archivo(self, ruta_imagen):
-
+        '''
+        Este método procesa un archivo de imagen específico, ejecutando el modelo de detección y mostrando los resultados.
+        Devuelve True si el usuario decide salir durante la visualización de los resultados, False en caso contrario.
+        '''
         imagen = self._cargar_imagen(ruta_imagen)
 
         resultados = self.modelo(imagen, verbose=False)
@@ -78,7 +95,9 @@ class Detector:
 
 
     def _cargar_imagen(self, ruta):
-
+        '''
+        Este método carga una imagen desde la ruta especificada, asegurándose de que el archivo es válido y se puede procesar.
+        '''
         imagen = cv2.imread(ruta)
 
         if imagen is None:
@@ -87,7 +106,10 @@ class Detector:
 
 
     def _procesar_detecciones(self, imagen, resultados):
-
+        '''
+        Este método procesa los resultados de detección, extrayendo las regiones de interés correspondientes a las matrículas, ejecutando OCR y mostrando los resultados.
+        Una vez reconocida la matrícula, se llama a un método privado para dibujar los resultados en la imagen.
+        '''
         for resultado in resultados:
 
             indices_matriculas = (resultado.boxes.cls == 0).nonzero(as_tuple=True)[0]
@@ -113,7 +135,10 @@ class Detector:
 
 
     def _dibujar_resultados(self, imagen, x1, y1, x2, y2, texto):
-
+        '''
+        Este método dibuja un rectángulo alrededor de la matrícula detectada y muestra el texto reconocido por OCR.
+        Se establecen parámetros de fuente, escala y grosor para asegurar una visualización clara y legible de los resultados.
+        '''
         fuente = cv2.FONT_HERSHEY_SIMPLEX
         escala = 1.0
         grosor = 2
@@ -133,6 +158,9 @@ class Detector:
 
 
     def _redimensionar(self, imagen, ancho=960):
+        '''
+        Este método redimensiona la imagen manteniendo la relación de aspecto, ajustando el ancho a un valor específico y calculando el alto correspondiente.
+        '''
         h, w = imagen.shape[:2]
         escala = ancho / w
         nuevo_alto = int(h * escala)

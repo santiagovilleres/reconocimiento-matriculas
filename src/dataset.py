@@ -1,3 +1,8 @@
+'''
+Este módulo contiene utilidades para la organización y preparación del dataset. 
+Renombra archivos y etiquetas, y prepara la porción del dataset que se utiliza para evaluar el OCR.
+'''
+
 import os
 import cv2
 from ultralytics import YOLO
@@ -12,7 +17,9 @@ UMBRAL_CONFIANZA = 0.4
 
 
 def renombrar():
-
+    '''
+    Esta función renombra las imágenes y sus etiquetas correspondientes en orden numérico secuencial.
+    '''
     imagenes = sorted([f for f in os.listdir(CARPETA_IMAGENES) if f.endswith(".jpg")])
     contador = 1
 
@@ -33,7 +40,11 @@ def renombrar():
 
 
 def recortar():
-
+    
+    '''
+    Esta función recorta las matrículas de las imagenes utilizando YOLO 
+    y las guarda en la ruta seleccionada para el posterior evaluación del OCR.
+    '''
     os.makedirs(OUTPUT, exist_ok=True)
 
     modelo = YOLO(RUTA_MODELO)
