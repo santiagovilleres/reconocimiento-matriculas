@@ -61,7 +61,6 @@ Texto final
 * Fast Plate OCR (ONNX Runtime)
 * OpenCV
 * NumPy
-* Pandas
 * Tkinter (interfaz gráfica)
 * Python-Levenshtein (métricas de evaluación)
 * PyTorch (soporte GPU)
@@ -73,27 +72,23 @@ Texto final
 ```
 project/
 ├── data/
-│    ├── train/
-│    ├── val/
-│    ├── test/
-│    │   ├── images/
-│    │   └── labels/
-│    ├── ocr/
-│    │   ├── images/
-│    │   └── labels.txt
-│    └── data.yaml
+│	├── ocr/
+│	├── train/
+│	├── val/
+│	└── test/
 ├── models/
 │   └── weights/
-│       └── best.pt
+│   	└── best.pt
 ├── src/
-│   ├── main.py
 │   ├── train.py
 │   ├── detect.py
 │   ├── ocr.py
 │   ├── evaluate.py
+│   ├── main.py
 │   └── dataset.py
 ├── requirements.txt
 └── README.md
+
 ```
 
 
@@ -102,8 +97,8 @@ project/
 Clonar repositorio:
 
 ```bash
-git clone https://github.com/santiagovilleres/reconocimiento-matriculas
-cd reconocimiento-matriculas
+git clone 
+cd 
 ```
 
 Crear entorno virtual (Python 3.10/11 recomendado):
@@ -143,22 +138,9 @@ El menú ofrece las siguientes opciones:
 4. **Evaluar modelo**: Ejecuta la evaluación completa del modelo con todas las métricas.
 5. **Salir**: Cierra la aplicación.
 
-### Ejecución directa de módulos
 
-También es posible ejecutar los módulos directamente:
-
-#### Detección sobre imagen o carpeta
-
-```bash
-python src/detect.py
 ```
-
-#### Evaluación sobre dataset de test
-
-```bash
-python src/evaluate.py
 ```
-
 ## 8. Métricas Implementadas
 
 ### Detección
@@ -183,7 +165,7 @@ python src/evaluate.py
 
 ## 9. Autores
 
-* Tomás S. Leira, Simon Ortiz, Santiago Villeres
+* S. Tomás Leira, Simon Ortiz, Santiago Villeres
 * Instituto Superior De Formación Técnica N°130
 * Tecnicatura Superior En Análisis De Sistemas
 * Algoritmos y Estructuras De Datos III
