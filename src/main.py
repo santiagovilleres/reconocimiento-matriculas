@@ -25,7 +25,7 @@ def main():
         print("4 : Evaluar modelo")
         print("5 : Salir")
 
-        opcion = input("Opción: ")
+        opcion = input("Opción: ").strip()
         
         if opcion == SALIR:
             break
